@@ -1,0 +1,50 @@
+logging:
+  level:
+    root: "${root_logging_level:INFO}"
+    it.tim.dashboard.integration.client: "${feign_logging_level:DEBUG}"
+    it.tim.dashboard: "${application_logging_level:DEBUG}"
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) [${spring.application.name}] [trace=%16X{X-B3-TraceId:-},span=%16X{X-B3-SpanId:-}] %-30logger{0}: %m%n"
+
+
+application:
+  config:
+    promotionsConfigFile: "${PROMO_FILE_PATH:./src/main/resources/promotions.json}"
+    profilesConfigFile: "${PROFILE_FILE_PATH:./src/main/resources/profiles.json}"
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: "${HTTP_CONN_TIMEOUT:5000}"
+        readTimeout: "${HTTP_DEF_TIMEOUT:10000}"
+        loggerLevel: "${FEIGN_LOG_LEVEL:full}"
+      Clienti:
+        connect-timeout: "${connection.timeout:10000}"
+        read-timeout: "${HTTP_CLIENTI_TIMEOUT:10000}"
+        loggerLevel: "${FEIGN_LOG_LEVEL:full}"
+      Consistenze:
+        connect-timeout: "${connection.timeout:10000}"
+        read-timeout: "${HTTP_CONSISTENZE_TIMEOUT:10000}"
+        loggerLevel: "${FEIGN_LOG_LEVEL:full}"
+      Offerte:  
+        connect-timeout: "${connection.timeout:10000}"
+        read-timeout: "${HTTP_OFFERTE_TIMEOUT:10000}"
+        loggerLevel: "${FEIGN_LOG_LEVEL:full}"
+
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread.timeoutInMilliseconds: "${HYSTRIX_TIMEOUT:20000}"
+
+integration:
+  sdp:
+    consistenzebasepath: "${sdp_consistenze_path:http://localhost:8080}"
+    clientibasepath: "${sdp_clienti_path:http://localhost:8080}"
+    offersbasepath: "${sdp_offerte_path:http://localhost:8080}"
